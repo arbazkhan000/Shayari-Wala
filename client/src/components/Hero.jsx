@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Feather, Heart } from "lucide-react";
+import { Feather, Heart, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -77,17 +77,32 @@ const Hero = () => {
                     </motion.div>
                 </motion.div>
 
-                <motion.button
-                    onClick={() => navigate("/shayari")}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.2, duration: 0.8 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="mt-8 px-8 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-purple-900 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                    Dil Ki Baat Padho
-                </motion.button>
+                <div className="flex flex-col items-center gap-4 mt-8">
+                    <motion.button
+                        onClick={() => navigate("/shayari")}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 2.2, duration: 0.8 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-purple-900 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                        Dil Ki Baat Padho
+                    </motion.button>
+
+                    <motion.button
+                        onClick={() => navigate("/admin/login")}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 2.4, duration: 0.8 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-3 bg-white/10 backdrop-blur-md border border-purple-400/30 text-white font-semibold rounded-full shadow-lg hover:bg-white/20 transition-all duration-300 flex items-center gap-2"
+                    >
+                        <Lock size={18} />
+                        Admin Login
+                    </motion.button>
+                </div>
             </div>
         </section>
     );
