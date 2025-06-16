@@ -1,67 +1,42 @@
-import { supabase } from "@/supabase/supabase";
 import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/supabase/supabase";
 
-const AuthContext = createContext();
+const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
-
-    // const role = user?.user_metadata?.role;
-
-    // useEffect(() => {
-    //     const getCurrentUser = async () => {
-    //         const { data, error } = await supabase.auth.getUser();
-    //         if (data?.user) {
-    //             setUser(data.user);
-    //         }
-    //     };
-    //     getCurrentUser();
-    // }, []);
-
-    const login = async (email, password) => {
-        setLoading(true);
-
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (error) throw error;
-            setUser(data.user);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const logout = async () => {
-        await supabase.auth.signOut();
-        setUser(null);
-    };
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const getUser = async () => {
-            const { data } = await supabase.auth.getUser();
-            if (data?.user) setUser(data.user);
-        };
-        getUser();
+        // Check active sessions and sets the user
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        // Listen for changes on auth state (logged in, signed out, etc.)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
+    const value = {
+        signUp: (data) => supabase.auth.signUp(data),
+        signIn: (data) => supabase.auth.signInWithPassword(data),
+        signOut: () => supabase.auth.signOut(),
+        user,
+    };
+
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                login,
-                logout,
-                loading,
-            }}
-        >
-            {children}
+        <AuthContext.Provider value={value}>
+            {!loading && children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
