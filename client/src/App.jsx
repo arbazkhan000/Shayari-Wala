@@ -5,21 +5,12 @@ import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./components/Dashboard";
 import Shayari from "./components/Shayari";
 import ShayariDetail from "./components/ShayariDetail";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import CategoryPage from "./pages/CategoryPage";
 import Index from "./pages/Index";
-import Login from "./pages/Login";
+import AdminLogin from "./pages/AdminLogin";
 import RegisterAdmin from "./pages/RegisterAdmin";
-
-const AdminProteced = ({ children }) => {
-    // const { user } = useAuth();
-    // const role = user?.user_metadata?.role;
-
-    // if (!user || role !== "admin") {
-    //     return <Navigate to="/admin/login" replace />;
-    // }
-    return children;
-};
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
     return (
@@ -30,16 +21,16 @@ function App() {
                     <Route path="/shayari" element={<Shayari />} />
                     <Route path="/shayari/:id" element={<ShayariDetail />} />
                     <Route path="/category/:id" element={<CategoryPage />} />
-                    category
-                    {/* Admin Login (Public) */}
-                    <Route path="/admin/login" element={<Login />} />
+                    
+                    {/* Admin Routes */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
                     <Route path="/admin/register" element={<RegisterAdmin />} />
                     <Route
                         path="/admin"
                         element={
-                            <AdminProteced>
+                            <ProtectedRoute>
                                 <AdminLayout />
-                            </AdminProteced>
+                            </ProtectedRoute>
                         }
                     >
                         <Route path="dashboard" element={<Dashboard />} />
